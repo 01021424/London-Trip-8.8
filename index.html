@@ -723,6 +723,10 @@ function drawMarkers(){
     });
     mapBox.appendChild(el);markers.push(el);
   });
+
+  // Scale all markers with zoom level
+  const ms=Math.max(0.7,Math.min(zoomLevel,2));
+  markers.forEach(el=>{if(el&&!el.classList.contains('map-ctrl')){el.style.transform=el.style.transform.replace(/scale\([^)]*\)/,'')+' scale('+ms+')';}});
 }
 
 // ====== Landmark Detail ======
@@ -875,7 +879,7 @@ function switchDay(idx){
 
 function buildLegend(){
   const c=document.getElementById('legendBar');
-  DAYS.forEach(d=>{c.innerHTML+='<div class="legend-item"><div class="legend-color" style="background:'+d.color+'"></div>'+d.date+'('+d.wd+')</div>';});
+  DAYS.forEach((d,i)=>{const el=document.createElement('div');el.className='legend-item';el.style.cursor='pointer';el.innerHTML='<div class="legend-color" style="background:'+d.color+'"></div>'+d.date+'('+d.wd+')';el.addEventListener('click',()=>switchDay(i));c.appendChild(el);});
   c.innerHTML+='<div class="legend-item" style="margin-left:8px;border-left:1px solid var(--border);padding-left:12px;">🏨 酒店</div>';
   c.innerHTML+='<div class="legend-item" style="margin-left:4px;"><div class="legend-color" style="background:#3498db;height:2px;border-top:2px dashed #3498db;"></div>方案A(游船)</div>';
   c.innerHTML+='<div class="legend-item" style="margin-left:8px;border-left:1px solid var(--border);padding-left:12px;"><span style="background:#E32017;color:#fff;font-size:8px;padding:1px 4px;border-radius:50%;">M</span> 地铁站</div>';
@@ -907,6 +911,54 @@ mapBox.addEventListener('wheel',e=>{
   panY=my-(my-oldT)*newS/oldS-(bh-dh*zoomLevel)/2;
   updateMap();
 },{passive:false});
+
+// ====== Touch support (mobile) ======
+let touchStartDist=0, touchStartZoom=1, touchStartPanX=0, touchStartPanY=0, touchStartMidX=0, touchStartMidY=0;
+mapBox.addEventListener('touchstart',e=>{
+  if(e.target.closest('.marker')||e.target.closest('.rec-marker')||e.target.closest('.tube-marker')||e.target.closest('.toilet-marker')||e.target.closest('.landmark-marker')||e.target.closest('.map-ctrl')||e.target.closest('#spotDetail'))return;
+  if(e.touches.length===1){
+    isDragging=true;dragStartX=e.touches[0].clientX;dragStartY=e.touches[0].clientY;startPanX=panX;startPanY=panY;
+  }else if(e.touches.length===2){
+    isDragging=false;
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    touchStartDist=Math.sqrt(dx*dx+dy*dy);
+    touchStartZoom=zoomLevel;
+    touchStartPanX=panX;touchStartPanY=panY;
+    touchStartMidX=(e.touches[0].clientX+e.touches[1].clientX)/2;
+    touchStartMidY=(e.touches[0].clientY+e.touches[1].clientY)/2;
+  }
+},{passive:true});
+
+mapBox.addEventListener('touchmove',e=>{
+  if(e.touches.length===1&&isDragging){
+    panX=startPanX+(e.touches[0].clientX-dragStartX);
+    panY=startPanY+(e.touches[0].clientY-dragStartY);
+    updateMap();
+  }else if(e.touches.length===2&&touchStartDist>0){
+    const dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    const scale=dist/touchStartDist;
+    const oldZ=zoomLevel;
+    zoomLevel=Math.max(0.3,Math.min(touchStartZoom*scale,4));
+    const rect=mapBox.getBoundingClientRect();
+    const mx=touchStartMidX-rect.left, my=touchStartMidY-rect.top;
+    const bw=mapBox.clientWidth,bh=mapBox.clientHeight;
+    const a=IMG_W/IMG_H;let dw,dh;
+    if(bw/bh>a){dh=bh;dw=bh*a;}else{dw=bw;dh=bw/a;}
+    const oldS=dw/IMG_W*oldZ, newS=dw/IMG_W*zoomLevel;
+    const oldL=(bw-dw*oldZ)/2+touchStartPanX, oldT=(bh-dh*oldZ)/2+touchStartPanY;
+    panX=mx-(mx-oldL)*newS/oldS-(bw-dw*zoomLevel)/2;
+    panY=my-(my-oldT)*newS/oldS-(bh-dh*zoomLevel)/2;
+    updateMap();
+  }
+},{passive:true});
+
+mapBox.addEventListener('touchend',()=>{isDragging=false;touchStartDist=0;});
+// Prevent click after drag on mobile
+let touchMoved=false;
+mapBox.addEventListener('touchmove',()=>{touchMoved=true;},{passive:true});
+mapBox.addEventListener('touchstart',()=>{touchMoved=false;},{passive:true});
+mapBox.addEventListener('click',e=>{if(touchMoved){touchMoved=false;e.stopImmediatePropagation();}},{capture:true});
 
 mapBox.style.cursor='grab';
 buildTabs();buildLegend();switchDay(0);
