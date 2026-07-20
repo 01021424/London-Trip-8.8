@@ -84,7 +84,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 #mapTooltip .tt-desc{font-size:11px;opacity:.8;line-height:1.5;}
 
 /* Spot detail panel */
-#spotDetail{position:absolute;top:16px;right:16px;width:340px;max-height:calc(100vh - 32px);background:var(--card);border:1px solid var(--border);border-radius:14px;z-index:60;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);overflow:hidden;animation:slideInRight .25s ease-out;}
+#spotDetail{position:fixed;top:16px;right:16px;width:340px;max-height:calc(100vh - 32px);background:var(--card);border:1px solid var(--border);border-radius:14px;z-index:500;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);overflow:hidden;animation:slideInRight .25s ease-out;}
 #geoMarker{position:absolute;width:22px;height:22px;z-index:35;pointer-events:none;display:none;transform:translate(-50%,-50%);}
 #geoMarker .geo-dot{width:14px;height:14px;background:#4285f4;border:3px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(66,133,244,.6);position:absolute;top:4px;left:4px;}
 #geoMarker .geo-ring{width:22px;height:22px;border:2px solid rgba(66,133,244,.4);border-radius:50%;position:absolute;top:0;left:0;animation:geoPulse 2s ease-out infinite;}
@@ -148,8 +148,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .landmark-marker:hover .mlabel{display:block;}
 .mobile-toggle{display:none;position:fixed;top:12px;left:12px;z-index:150;background:var(--card);border:1px solid var(--border);border-radius:10px;width:40px;height:40px;align-items:center;justify-content:center;color:var(--text);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4);}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;opacity:0;transition:opacity .3s;}
-.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:490;opacity:0;transition:opacity .25s;}
-.detail-overlay.active{display:block;opacity:1;}
 @media(max-width:768px){
   body{overflow:hidden;}
   #sidebar{position:fixed;left:0;top:0;width:85vw;max-width:360px;height:100vh;transform:translateX(-100%);transition:transform .3s ease;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.5);}
@@ -228,7 +226,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active');"></div>
-<div class="detail-overlay" id="detailOverlay" onclick="closeSpotDetail();"></div>
 <div id="sidebar">
   <div class="sidebar-header">
     <h1>🗺️ 伦敦六日行程</h1>
@@ -249,27 +246,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
     <button id="geoLocate" title="我的位置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
   </div>
   <div class="legend-bar" id="legendBar"></div>
-  <div id="spotDetail">
-    <div class="sp-detail-header">
-      <button class="sp-close" onclick="closeSpotDetail()">✕</button>
-      <span class="sp-tag" id="spTag">景点</span>
-      <div class="sp-title" id="spTitle">景点名称</div>
-      <div class="sp-meta">
-        <span id="spTime">时间</span>
-        <span id="spTransport">交通</span>
-      </div>
+</div>
+<div id="spotDetail">
+  <div class="sp-detail-header">
+    <button class="sp-close" onclick="closeSpotDetail()">✕</button>
+    <span class="sp-tag" id="spTag">景点</span>
+    <div class="sp-title" id="spTitle">景点名称</div>
+    <div class="sp-meta">
+      <span id="spTime">时间</span>
+      <span id="spTransport">交通</span>
     </div>
-    <div class="sp-detail-body" id="spBody"></div>
-    <div class="sp-nav-row">
-      <button class="sp-nav-btn" id="navGoogle" onclick="navTo('google')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span>Google Maps</span>
-      </button>
-      <button class="sp-nav-btn" id="navAmap" onclick="navTo('amap')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        <span>高德地图</span>
-      </button>
-    </div>
+  </div>
+  <div class="sp-detail-body" id="spBody"></div>
+  <div class="sp-nav-row">
+    <button class="sp-nav-btn" id="navGoogle" onclick="navTo('google')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span>Google Maps</span>
+    </button>
+    <button class="sp-nav-btn" id="navAmap" onclick="navTo('amap')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span>高德地图</span>
+    </button>
   </div>
 </div>
 
@@ -873,10 +870,6 @@ function showSpotDetail(s,day,idx){
   }
   bodyEl.innerHTML=html;
   panel.classList.add('active');
-  // 手机上显示详情遮罩层
-  if(window.innerWidth <= 768){
-    document.getElementById('detailOverlay').classList.add('active');
-  }
   // Store current spot coords for navigation
   panel.dataset.lat=s.lat;
   panel.dataset.lng=s.lng;
@@ -885,8 +878,9 @@ function showSpotDetail(s,day,idx){
   drawMarkers();
 }
 function closeSpotDetail(){
-  document.getElementById('spotDetail').classList.remove('active');
-  document.getElementById('detailOverlay').classList.remove('active');
+  const panel=document.getElementById('spotDetail');
+  if(!panel.classList.contains('active'))return;
+  panel.classList.remove('active');
   activeSpotName=null;
   drawMarkers();
 }
@@ -1090,20 +1084,23 @@ mapBox.addEventListener('touchmove',e=>{
   }
 },{passive:true});
 
+// Mobile touch: track movement to distinguish tap vs drag
+let touchStartX=0,touchStartY=0,touchMoved=false;
+mapBox.addEventListener('touchstart',e=>{touchMoved=false;if(e.touches[0]){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;}},{passive:true});
+mapBox.addEventListener('touchmove',e=>{if(e.touches[0]){const dx=Math.abs(e.touches[0].clientX-touchStartX);const dy=Math.abs(e.touches[0].clientY-touchStartY);if(dx>10||dy>10)touchMoved=true;}},{passive:true});
+
 mapBox.addEventListener('touchend',e=>{
   isDragging=false;touchStartDist=0;
-  // 手机上点击空白处关闭详情面板
-  if(!touchMoved && e.changedTouches[0]){
-    const t=document.elementFromPoint(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
-    if(t && !t.closest('#spotDetail') && !t.closest('.marker') && !t.closest('.rec-marker') && !t.closest('.tube-marker') && !t.closest('.toilet-marker') && !t.closest('.landmark-marker') && !t.closest('.hotel-pin') && !t.closest('.map-ctrl') && !t.closest('.legend-bar') && !t.closest('.mobile-toggle')){
+  // 手机上轻点空白处关闭详情面板（排除标记、按钮、图例等）
+  if(!touchMoved && e.target){
+    const t=e.target;
+    if(!t.closest('.marker') && !t.closest('.rec-marker') && !t.closest('.tube-marker') && !t.closest('.toilet-marker') && !t.closest('.landmark-marker') && !t.closest('.hotel-pin') && !t.closest('.map-ctrl') && !t.closest('.legend-bar')){
       closeSpotDetail();
     }
   }
 });
-// Prevent click after drag on mobile (only if actually moved significantly)
-let touchStartX=0,touchStartY=0,touchMoved=false;
-mapBox.addEventListener('touchstart',e=>{touchMoved=false;if(e.touches[0]){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;}},{passive:true});
-mapBox.addEventListener('touchmove',e=>{if(e.touches[0]){const dx=Math.abs(e.touches[0].clientX-touchStartX);const dy=Math.abs(e.touches[0].clientY-touchStartY);if(dx>10||dy>10)touchMoved=true;}},{passive:true});
+
+// Prevent click after drag on mobile
 mapBox.addEventListener('click',e=>{if(touchMoved){touchMoved=false;e.stopPropagation();e.preventDefault();}},{capture:true});
 
 mapBox.style.cursor='grab';
