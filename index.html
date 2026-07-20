@@ -69,6 +69,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 #mapImg{position:absolute;transform-origin:center center;image-rendering:auto;user-select:none;-webkit-user-drag:none;}
 .marker{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.6);cursor:pointer;z-index:20;transition:transform .2s;-webkit-tap-highlight-color:transparent;}
 .marker:hover{transform:scale(1.3);z-index:30;}
+.marker-active{transform:scale(1.3) !important;z-index:30 !important;box-shadow:0 0 0 3px rgba(240,165,0,.5) !important;}
 .marker .mlabel{display:none;position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:4px 10px;border-radius:5px;font-size:10px;white-space:nowrap;font-weight:500;pointer-events:none;}
 .marker:hover .mlabel{display:block;}
 .marker-sm{width:22px;height:22px;font-size:9px;border-width:2px;}
@@ -504,6 +505,7 @@ function latLngToPixel(lat,lng){
 
 let currentDay=0, zoomLevel=1, panX=0, panY=0;
 let isDragging=false, dragStartX, dragStartY, startPanX, startPanY;
+let activeSpotName=null;
 let markers=[];
 
 const mapBox=document.getElementById('mapBox');
@@ -641,13 +643,9 @@ function drawMarkers(){
     el.style.left=(hsp.x-15)+'px';el.style.top=(hsp.y-15)+'px';
     el.textContent='🏨';
     el.innerHTML+='<span class="mlabel">'+hk.name+'</span>';
-    el.addEventListener('mouseenter',()=>{
-      tooltip.style.display='block';
-      tooltip.style.left=Math.min(hsp.x+20,mapBox.clientWidth-230)+'px';
-      tooltip.style.top=Math.max(hsp.y-50,10)+'px';
-      tooltip.innerHTML='<div class="tt-title" style="color:'+hk.color+'">'+hk.name+'</div><div class="tt-time">'+hk.checkin+' - '+hk.checkout+' · '+hk.en+'</div><div class="tt-desc">'+hk.desc+'</div>';
-    });
+    el.addEventListener('mouseenter',()=>{if(activeSpotName===hk.name)return;tooltip.style.display='block';tooltip.style.left=Math.min(hsp.x+20,mapBox.clientWidth-230)+'px';tooltip.style.top=Math.max(hsp.y-50,10)+'px';tooltip.innerHTML='<div class="tt-title" style="color:'+hk.color+'">'+hk.name+'</div><div class="tt-time">'+hk.checkin+' - '+hk.checkout+' · '+hk.en+'</div><div class="tt-desc">'+hk.desc+'</div>';});
     el.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
+    if(activeSpotName===hk.name)el.classList.add('marker-active');
     mapBox.appendChild(el);markers.push(el);
   }
 
@@ -660,17 +658,10 @@ function drawMarkers(){
     el.style.background=s.transfer?d.color+'88':d.color;
     el.textContent=i+1;
     el.innerHTML+='<span class="mlabel">'+s.name+'</span>';
-    el.addEventListener('mouseenter',()=>{
-      tooltip.style.display='block';
-      tooltip.style.left=Math.min(sp.x+20,mapBox.clientWidth-230)+'px';
-      tooltip.style.top=Math.max(sp.y-50,10)+'px';
-      tooltip.innerHTML='<div class="tt-title" style="color:'+d.color+'">'+s.name+'</div><div class="tt-time">'+d.date+'('+d.wd+') '+s.time+'</div><div class="tt-desc">'+s.desc+'</div>';
-    });
+    el.addEventListener('mouseenter',()=>{if(activeSpotName===s.name)return;tooltip.style.display='block';tooltip.style.left=Math.min(sp.x+20,mapBox.clientWidth-230)+'px';tooltip.style.top=Math.max(sp.y-50,10)+'px';tooltip.innerHTML='<div class="tt-title" style="color:'+d.color+'">'+s.name+'</div><div class="tt-time">'+d.date+'('+d.wd+') '+s.time+'</div><div class="tt-desc">'+s.desc+'</div>';});
     el.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
-    el.addEventListener('click',(e)=>{
-      e.stopPropagation();
-      showSpotDetail(s,d,i+1);
-    });
+    el.addEventListener('click',(e)=>{e.stopPropagation();showSpotDetail(s,d,i+1);});
+    if(activeSpotName===s.name)el.classList.add('marker-active');
     mapBox.appendChild(el);markers.push(el);
   });
 
@@ -683,17 +674,10 @@ function drawMarkers(){
     el.style.left=(sp.x-10)+'px';el.style.top=(sp.y-10)+'px';
     el.textContent=r.type==='餐饮'?'🍽️':'🛍️';
     el.innerHTML+='<span class="mlabel">'+r.name+' · '+r.type+'</span>';
-    el.addEventListener('mouseenter',()=>{
-      tooltip.style.display='block';
-      tooltip.style.left=Math.min(sp.x+20,mapBox.clientWidth-230)+'px';
-      tooltip.style.top=Math.max(sp.y-50,10)+'px';
-      tooltip.innerHTML='<div class="tt-title" style="color:'+r.color+'">'+r.name+'</div><div class="tt-time">'+r.area+' · '+r.type+'</div><div class="tt-desc">'+r.desc+'</div>';
-    });
+    el.addEventListener('mouseenter',()=>{if(activeSpotName===r.name)return;tooltip.style.display='block';tooltip.style.left=Math.min(sp.x+20,mapBox.clientWidth-230)+'px';tooltip.style.top=Math.max(sp.y-50,10)+'px';tooltip.innerHTML='<div class="tt-title" style="color:'+r.color+'">'+r.name+'</div><div class="tt-time">'+r.area+' · '+r.type+'</div><div class="tt-desc">'+r.desc+'</div>';});
     el.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
-    el.addEventListener('click',(e)=>{
-      e.stopPropagation();
-      showSpotDetail(r,null,0);
-    });
+    el.addEventListener('click',(e)=>{e.stopPropagation();showSpotDetail(r,null,0);});
+    if(activeSpotName===r.name)el.classList.add('marker-active');
     mapBox.appendChild(el);markers.push(el);
   });
 
@@ -727,10 +711,8 @@ function drawMarkers(){
     el.style.left=(sp.x-11)+'px';el.style.top=(sp.y-11)+'px';
     el.textContent='🏛';
     el.innerHTML+='<span class="mlabel"><b>'+lm.name+'</b> ('+lm.era+')<br><span style="opacity:.8;font-size:8px">'+lm.desc.substring(0,60)+'...</span></span>';
-    el.addEventListener('click',(e)=>{
-      e.stopPropagation();
-      showLandmarkDetail(lm);
-    });
+    el.addEventListener('click',(e)=>{e.stopPropagation();showLandmarkDetail(lm);});
+    if(activeSpotName===lm.name)el.classList.add('marker-active');
     mapBox.appendChild(el);markers.push(el);
   });
 
@@ -759,6 +741,8 @@ function showLandmarkDetail(lm){
   panel.dataset.lat=lm.lat;
   panel.dataset.lng=lm.lng;
   panel.dataset.name=lm.name;
+  activeSpotName=lm.name;
+  drawMarkers();
 }
 let _currentNavLat=0,_currentNavLng=0;
 function navTo(app){
@@ -815,9 +799,13 @@ function showSpotDetail(s,day,idx){
   panel.dataset.lat=s.lat;
   panel.dataset.lng=s.lng;
   panel.dataset.name=s.name;
+  activeSpotName=s.name;
+  drawMarkers();
 }
 function closeSpotDetail(){
   document.getElementById('spotDetail').classList.remove('active');
+  activeSpotName=null;
+  drawMarkers();
 }
 // Click outside to close
 mapBox.addEventListener('click',(e)=>{
