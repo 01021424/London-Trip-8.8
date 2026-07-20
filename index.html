@@ -85,6 +85,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 /* Spot detail panel */
 #spotDetail{position:absolute;top:16px;right:16px;width:340px;max-height:calc(100vh - 32px);background:var(--card);border:1px solid var(--border);border-radius:14px;z-index:60;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);overflow:hidden;animation:slideInRight .25s ease-out;}
+#geoMarker{position:absolute;width:22px;height:22px;z-index:35;pointer-events:none;display:none;}
+#geoMarker .geo-dot{width:14px;height:14px;background:#4285f4;border:3px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(66,133,244,.6);position:absolute;top:4px;left:4px;}
+#geoMarker .geo-ring{width:22px;height:22px;border:2px solid rgba(66,133,244,.4);border-radius:50%;position:absolute;top:0;left:0;animation:geoPulse 2s ease-out infinite;}
+@keyframes geoPulse{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.5);opacity:0;}}
 @keyframes slideInRight{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
 #spotDetail.active{display:flex;}
 .sp-detail-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);position:relative;}
@@ -178,10 +182,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   <img id="mapImg" src="assets/london_map.png" alt="London Map" draggable="false" onerror="var i=this,r=r||0;if(r<5){setTimeout(function(){i.src='assets/london_map.png?r='+r;},r*2000);}">
   <canvas id="mapCanvas"></canvas>
   <div id="mapTooltip"></div>
+  <div id="geoMarker"><div class="geo-ring"></div><div class="geo-dot"></div></div>
   <div class="map-ctrl">
     <button id="zoomIn" title="放大"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
     <button id="zoomOut" title="缩小"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
     <button id="zoomReset" title="重置视图"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
+    <button id="geoLocate" title="我的位置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg></button>
   </div>
   <div class="legend-bar" id="legendBar"></div>
   <div id="spotDetail">
@@ -706,7 +712,6 @@ function drawMarkers(){
     el.className='toilet-marker'+(t.free?'':' paid');
     el.style.left=(sp.x-8)+'px';el.style.top=(sp.y-8)+'px';
     el.textContent='WC';
-    el.innerHTML+='<span class="mlabel">'+t.name+' · '+(t.free?'免费':'收费')+'</span>';
     mapBox.appendChild(el);markers.push(el);
   });
 
@@ -726,6 +731,13 @@ function drawMarkers(){
   // Scale all markers with zoom level
   const ms=Math.max(0.45,Math.min(zoomLevel*0.35,1.0));
   markers.forEach(el=>{if(el&&!el.classList.contains('map-ctrl')){el.style.transform=el.style.transform.replace(/scale\([^)]*\)/,'')+' scale('+ms+')';}});
+
+  // GPS marker position
+  if(geoMarker.style.display==='block' && geoMarker.dataset.mapX){
+    const gp=pxToMapPx(parseFloat(geoMarker.dataset.mapX),parseFloat(geoMarker.dataset.mapY));
+    geoMarker.style.left=(gp.x-11)+'px';
+    geoMarker.style.top=(gp.y-11)+'px';
+  }
 }
 
 // ====== Landmark Detail ======
@@ -926,6 +938,34 @@ function buildLegend(){
 document.getElementById('zoomIn').onclick=()=>{zoomLevel=Math.min(zoomLevel*1.3,6);updateMap();};
 document.getElementById('zoomOut').onclick=()=>{zoomLevel=Math.max(zoomLevel/1.3,0.3);updateMap();};
 document.getElementById('zoomReset').onclick=()=>focusOnSpots();
+
+// ====== GPS Location ======
+const geoMarker=document.getElementById('geoMarker');
+document.getElementById('geoLocate').onclick=()=>{
+  const btn=document.getElementById('geoLocate');
+  if(!navigator.geolocation){alert('你的浏览器不支持定位功能');return;}
+  btn.style.color='#4285f4';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lng=pos.coords.longitude;
+    const mp=latLngToPixel(lat,lng);
+    // Check if position is within map bounds
+    if(mp.x<-50||mp.y<-50||mp.x>IMG_W+50||mp.y>IMG_H+50){
+      alert('你当前不在地图覆盖范围内');btn.style.color='';return;
+    }
+    geoMarker.style.display='block';
+    geoMarker.dataset.mapX=mp.x;geoMarker.dataset.mapY=mp.y;
+    // Pan to center on user position
+    const bw=mapBox.offsetWidth,bh=mapBox.offsetHeight;
+    const diw=IMG_W*(bw/IMG_W>IMG_H/bh?bh/IMG_H:bw/IMG_W)*zoomLevel;
+    const dih=IMG_H*(bw/IMG_W>IMG_H/bh?bh/IMG_H:bw/IMG_W)*zoomLevel;
+    panX=bw/2-(mp.x/IMG_W*diw);
+    panY=bh/2-(mp.y/IMG_H*dih);
+    updateMap();btn.style.color='';
+  },err=>{
+    let msg='定位失败';if(err.code===1)msg='你拒绝了定位权限';else if(err.code===2)msg='无法获取位置信息';else if(err.code===3)msg='定位超时，请重试';
+    alert(msg);btn.style.color='';
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:30000});
+};
 
 mapBox.addEventListener('mousedown',e=>{if(e.target.closest('.marker')||e.target.closest('.hotel-pin')||e.target.closest('.map-ctrl'))return;isDragging=true;dragStartX=e.clientX;dragStartY=e.clientY;startPanX=panX;startPanY=panY;mapBox.style.cursor='grabbing';});
 window.addEventListener('mousemove',e=>{if(!isDragging)return;panX=startPanX+(e.clientX-dragStartX);panY=startPanY+(e.clientY-dragStartY);updateMap();});
