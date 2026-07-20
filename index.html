@@ -67,14 +67,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 #mapBox{flex:1;height:100vh;position:relative;overflow:hidden;background:#1a1f2e;touch-action:none;-webkit-user-select:none;user-select:none;}
 #mapCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;}
 #mapImg{position:absolute;transform-origin:center center;image-rendering:auto;user-select:none;-webkit-user-drag:none;}
-.marker{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.6);cursor:pointer;z-index:20;transition:transform .2s;-webkit-tap-highlight-color:transparent;}
-.marker:hover{transform:scale(1.3);z-index:30;}
-.marker-active{transform:scale(1.3) !important;z-index:30 !important;box-shadow:0 0 0 3px rgba(240,165,0,.5) !important;}
+.marker{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.6);cursor:pointer;z-index:20;transition:transform .2s;-webkit-tap-highlight-color:transparent;transform:translate(-50%,-50%);}
+.marker:hover{transform:translate(-50%,-50%) scale(1.3);z-index:30;}
+.marker-active{transform:translate(-50%,-50%) scale(1.3) !important;z-index:30 !important;box-shadow:0 0 0 3px rgba(240,165,0,.5) !important;}
 .marker .mlabel{display:none;position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:4px 10px;border-radius:5px;font-size:10px;white-space:nowrap;font-weight:500;pointer-events:none;}
 .marker:hover .mlabel{display:block;}
 .marker-sm{width:22px;height:22px;font-size:9px;border-width:2px;}
-.hotel-pin{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.6);cursor:pointer;z-index:25;transition:transform .2s;background:#f0a500;}
-.hotel-pin:hover{transform:scale(1.25);z-index:30;}
+.hotel-pin{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2.5px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.6);cursor:pointer;z-index:25;transition:transform .2s;background:#f0a500;transform:translate(-50%,-50%);}
+.hotel-pin:hover{transform:translate(-50%,-50%) scale(1.25);z-index:30;}
 .hotel-pin .mlabel{display:none;position:absolute;top:-34px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:4px 10px;border-radius:5px;font-size:10px;white-space:nowrap;font-weight:500;pointer-events:none;}
 .hotel-pin:hover .mlabel{display:block;}
 
@@ -85,7 +85,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 /* Spot detail panel */
 #spotDetail{position:absolute;top:16px;right:16px;width:340px;max-height:calc(100vh - 32px);background:var(--card);border:1px solid var(--border);border-radius:14px;z-index:60;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);overflow:hidden;animation:slideInRight .25s ease-out;}
-#geoMarker{position:absolute;width:22px;height:22px;z-index:35;pointer-events:none;display:none;}
+#geoMarker{position:absolute;width:22px;height:22px;z-index:35;pointer-events:none;display:none;transform:translate(-50%,-50%);}
 #geoMarker .geo-dot{width:14px;height:14px;background:#4285f4;border:3px solid #fff;border-radius:50%;box-shadow:0 0 6px rgba(66,133,244,.6);position:absolute;top:4px;left:4px;}
 #geoMarker .geo-ring{width:22px;height:22px;border:2px solid rgba(66,133,244,.4);border-radius:50%;position:absolute;top:0;left:0;animation:geoPulse 2s ease-out infinite;}
 @keyframes geoPulse{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.5);opacity:0;}}
@@ -124,44 +124,102 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .map-ctrl button:hover{background:var(--card2);}
 .map-ctrl button svg{width:16px;height:16px;stroke:var(--text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-@media(max-width:900px){
-  body{flex-direction:column;}
-  #sidebar{width:100%;min-width:100%;height:40vh;}
-  #mapBox{height:60vh;}
-}
-
-.rec-marker{position:absolute;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.5);cursor:pointer;z-index:15;transition:transform .2s;}
-.rec-marker:hover{transform:scale(1.3);z-index:30;}
+.rec-marker{position:absolute;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.5);cursor:pointer;z-index:15;transition:transform .2s;transform:translate(-50%,-50%);}
+.rec-marker:hover{transform:translate(-50%,-50%) scale(1.3);z-index:30;}
 .rec-marker .mlabel{display:none;position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:3px 8px;border-radius:4px;font-size:9px;white-space:nowrap;font-weight:500;pointer-events:none;}
 .rec-marker:hover .mlabel{display:block;}
 .rec-food{background:#e67e22;}
 .rec-shop{background:#3498db;}
 .rec-cafe{background:#8e44ad;}
 
-.tube-marker{position:absolute;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:pointer;z-index:12;background:#E32017;transition:transform .15s;}
-.tube-marker:hover{transform:scale(1.25);z-index:25;}
+.tube-marker{position:absolute;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);cursor:pointer;z-index:12;background:#E32017;transition:transform .15s;transform:translate(-50%,-50%);}
+.tube-marker:hover{transform:translate(-50%,-50%) scale(1.25);z-index:25;}
 .tube-marker .mlabel{display:none;position:absolute;top:-28px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);color:#fff;padding:3px 8px;border-radius:4px;font-size:9px;white-space:nowrap;pointer-events:none;max-width:180px;text-align:center;}
 .tube-marker:hover .mlabel{display:block;}
-.toilet-marker{position:absolute;width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;border:1.5px solid rgba(255,255,255,.8);box-shadow:0 1px 3px rgba(0,0,0,.4);cursor:pointer;z-index:11;background:#27ae60;transition:transform .15s;}
-.toilet-marker:hover{transform:scale(1.3);z-index:25;}
+.toilet-marker{position:absolute;width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;border:1.5px solid rgba(255,255,255,.8);box-shadow:0 1px 3px rgba(0,0,0,.4);cursor:pointer;z-index:11;background:#27ae60;transition:transform .15s;transform:translate(-50%,-50%);}
+.toilet-marker:hover{transform:translate(-50%,-50%) scale(1.3);z-index:25;}
 .toilet-marker.paid{background:#7f8c8d;}
 .toilet-marker .mlabel{display:none;position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);color:#fff;padding:2px 7px;border-radius:4px;font-size:8px;white-space:nowrap;pointer-events:none;}
 .toilet-marker:hover .mlabel{display:block;}
 
-.landmark-marker{position:absolute;width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 5px rgba(0,0,0,.5);cursor:pointer;z-index:13;background:rgba(142,68,173,.85);transition:transform .15s;}
-.landmark-marker:hover{transform:scale(1.3);z-index:25;}
+.landmark-marker{position:absolute;width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid rgba(255,255,255,.85);box-shadow:0 1px 5px rgba(0,0,0,.5);cursor:pointer;z-index:13;background:rgba(142,68,173,.85);transition:transform .15s;transform:translate(-50%,-50%);}
+.landmark-marker:hover{transform:translate(-50%,-50%) scale(1.3);z-index:25;}
 .landmark-marker .mlabel{display:none;position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.92);color:#fff;padding:4px 10px;border-radius:5px;font-size:9px;white-space:nowrap;pointer-events:none;max-width:200px;text-align:center;line-height:1.4;}
 .landmark-marker:hover .mlabel{display:block;}
 .mobile-toggle{display:none;position:fixed;top:12px;left:12px;z-index:150;background:var(--card);border:1px solid var(--border);border-radius:10px;width:40px;height:40px;align-items:center;justify-content:center;color:var(--text);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4);}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;opacity:0;transition:opacity .3s;}
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:490;opacity:0;transition:opacity .25s;}
+.detail-overlay.active{display:block;opacity:1;}
 @media(max-width:768px){
-  #sidebar{position:fixed;left:0;top:0;width:85vw;max-width:360px;transform:translateX(-100%);transition:transform .3s ease;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.5);}
+  body{overflow:hidden;}
+  #sidebar{position:fixed;left:0;top:0;width:85vw;max-width:360px;height:100vh;transform:translateX(-100%);transition:transform .3s ease;z-index:200;box-shadow:4px 0 20px rgba(0,0,0,.5);}
   #sidebar.open{transform:translateX(0);}
-  #mapBox,#mapWrap{width:100% !important;}
+  #mapBox{width:100% !important;height:100vh !important;}
   .mobile-toggle{display:flex !important;}
-  .sidebar-overlay{display:none !important;}
-  .sidebar-overlay.active{display:block !important;opacity:1;}
-  #spotDetail{width:calc(100vw - 32px);max-width:340px;right:16px;}
+  .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;opacity:0;transition:opacity .3s;}
+  .sidebar-overlay.active{display:block;opacity:1;}
+  
+  /* 详情面板：底部弹出式 */
+  #spotDetail{
+    position:fixed;bottom:0;left:0;right:0;top:auto !important;
+    width:100% !important;max-width:100% !important;
+    max-height:70vh;
+    border-radius:16px 16px 0 0;
+    z-index:500;
+    animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+  }
+  #spotDetail::before{
+    content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+    width:36px;height:4px;border-radius:2px;background:var(--border);
+  }
+  @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+  
+  /* 控制按钮加大 */
+  .map-ctrl{top:12px;right:12px;gap:6px;}
+  .map-ctrl button{width:42px;height:42px;border-radius:10px;}
+  .map-ctrl button svg{width:18px;height:18px;}
+  
+  /* 底部图例优化 */
+  .legend-bar{
+    bottom:12px;left:12px;right:12px;transform:none;
+    padding:10px 12px;gap:10px;font-size:11px;
+    border-radius:12px;
+  }
+  .legend-item{gap:5px;}
+  .legend-color{width:20px;height:3px;}
+  
+  /* 移动端标记加大点击区域 */
+  .marker{width:34px;height:34px;font-size:12px;}
+  .marker-sm{width:26px;height:26px;font-size:10px;}
+  .hotel-pin{width:34px;height:34px;font-size:16px;}
+  .rec-marker{width:24px;height:24px;font-size:11px;}
+  .tube-marker{width:22px;height:22px;font-size:10px;}
+  .toilet-marker{width:20px;height:20px;font-size:10px;}
+  .landmark-marker{width:26px;height:26px;font-size:13px;}
+  
+  /* 导航按钮加大 */
+  .sp-nav-btn{padding:14px 10px;font-size:14px;border-radius:12px;}
+  .sp-nav-btn svg{width:18px;height:18px;}
+  .sp-detail-header{padding:20px 20px 14px;}
+  .sp-detail-header .sp-close{width:32px;height:32px;font-size:18px;top:12px;right:12px;}
+  .sp-detail-header .sp-title{font-size:18px;}
+  .sp-detail-body{padding:16px 20px;}
+  .sp-detail-body .sp-section h4{font-size:12px;}
+  .sp-detail-body .sp-section p{font-size:13px;}
+  .sp-nav-row{padding:12px 20px 24px;gap:10px;}
+  
+  /* 移动端去掉hover效果，用点击替代 */
+  .marker:hover .mlabel,
+  .hotel-pin:hover .mlabel,
+  .rec-marker:hover .mlabel,
+  .tube-marker:hover .mlabel,
+  .toilet-marker:hover .mlabel,
+  .landmark-marker:hover .mlabel{display:none;}
+  
+  /* GPS标记加大 */
+  #geoMarker{width:26px;height:26px;}
+  #geoMarker .geo-dot{width:16px;height:16px;top:5px;left:5px;}
+  #geoMarker .geo-ring{width:26px;height:26px;}
 }
 </style>
 </head>
@@ -170,6 +228,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('active');"></div>
+<div class="detail-overlay" id="detailOverlay" onclick="closeSpotDetail();"></div>
 <div id="sidebar">
   <div class="sidebar-header">
     <h1>🗺️ 伦敦六日行程</h1>
@@ -565,7 +624,7 @@ function focusOnSpots(){
 
 function makeMarker(x,y,html,onClick){
   const el=document.createElement('div');el.className='marker';
-  el.style.left=(x-15)+'px';el.style.top=(y-15)+'px';
+  el.style.left=x+'px';el.style.top=y+'px';
   el.innerHTML=html;
   if(onClick) el.addEventListener('mouseenter',onClick);
   el.addEventListener('mouseleave',()=>{tooltip.style.display='none';});
@@ -653,7 +712,7 @@ function drawMarkers(){
   if(hk){
     const hp=latLngToPixel(hk.lat,hk.lng),hsp=pxToMapPx(hp.x,hp.y);
     const el=document.createElement('div');el.className='hotel-pin';el.style.background=hk.color;
-    el.style.left=(hsp.x-15)+'px';el.style.top=(hsp.y-15)+'px';
+    el.style.left=hsp.x+'px';el.style.top=hsp.y+'px';
     el.textContent='🏨';
     el.innerHTML+='<span class="mlabel">'+hk.name+'</span>';
     el.addEventListener('mouseenter',()=>{if(activeSpotName===hk.name)return;tooltip.style.display='block';tooltip.style.left=Math.min(hsp.x+20,mapBox.clientWidth-230)+'px';tooltip.style.top=Math.max(hsp.y-50,10)+'px';tooltip.innerHTML='<div class="tt-title" style="color:'+hk.color+'">'+hk.name+'</div><div class="tt-time">'+hk.checkin+' - '+hk.checkout+' · '+hk.en+'</div><div class="tt-desc">'+hk.desc+'</div>';});
@@ -667,7 +726,7 @@ function drawMarkers(){
     const p=latLngToPixel(s.lat,s.lng),sp=pxToMapPx(p.x,p.y);
     const el=document.createElement('div');
     el.className='marker'+(s.transfer?' marker-sm':'');
-    el.style.left=(sp.x-(s.transfer?11:15))+'px';el.style.top=(sp.y-(s.transfer?11:15))+'px';
+    el.style.left=sp.x+'px';el.style.top=sp.y+'px';
     el.style.background=s.transfer?d.color+'88':d.color;
     el.textContent=i+1;
     el.innerHTML+='<span class="mlabel">'+s.name+'</span>';
@@ -684,7 +743,7 @@ function drawMarkers(){
     const el=document.createElement('div');
     const typeClass=r.type==='餐饮'?'rec-food':'rec-shop';
     el.className='rec-marker '+typeClass;
-    el.style.left=(sp.x-10)+'px';el.style.top=(sp.y-10)+'px';
+    el.style.left=sp.x+'px';el.style.top=sp.y+'px';
     el.textContent=r.type==='餐饮'?'🍽️':'🛍️';
     el.innerHTML+='<span class="mlabel">'+r.name+' · '+r.type+'</span>';
     el.addEventListener('mouseenter',()=>{if(activeSpotName===r.name)return;tooltip.style.display='block';tooltip.style.left=Math.min(sp.x+20,mapBox.clientWidth-230)+'px';tooltip.style.top=Math.max(sp.y-50,10)+'px';tooltip.innerHTML='<div class="tt-title" style="color:'+r.color+'">'+r.name+'</div><div class="tt-time">'+r.area+' · '+r.type+'</div><div class="tt-desc">'+r.desc+'</div>';});
@@ -699,7 +758,7 @@ function drawMarkers(){
     const p=latLngToPixel(s.lat,s.lng),sp=pxToMapPx(p.x,p.y);
     const el=document.createElement('div');
     el.className='tube-marker';
-    el.style.left=(sp.x-9)+'px';el.style.top=(sp.y-9)+'px';
+    el.style.left=sp.x+'px';el.style.top=sp.y+'px';
     el.textContent='M';
     el.innerHTML+='<span class="mlabel">'+s.name+'<br><span style="opacity:.7;font-size:8px">'+s.lines+'</span></span>';
     mapBox.appendChild(el);markers.push(el);
@@ -710,7 +769,7 @@ function drawMarkers(){
     const p=latLngToPixel(t.lat,t.lng),sp=pxToMapPx(p.x,p.y);
     const el=document.createElement('div');
     el.className='toilet-marker'+(t.free?'':' paid');
-    el.style.left=(sp.x-8)+'px';el.style.top=(sp.y-8)+'px';
+    el.style.left=sp.x+'px';el.style.top=sp.y+'px';
     el.textContent='WC';
     mapBox.appendChild(el);markers.push(el);
   });
@@ -720,7 +779,7 @@ function drawMarkers(){
     const p=latLngToPixel(lm.lat,lm.lng),sp=pxToMapPx(p.x,p.y);
     const el=document.createElement('div');
     el.className='landmark-marker';
-    el.style.left=(sp.x-11)+'px';el.style.top=(sp.y-11)+'px';
+    el.style.left=sp.x+'px';el.style.top=sp.y+'px';
     el.textContent='🏛';
     el.innerHTML+='<span class="mlabel"><b>'+lm.name+'</b> ('+lm.era+')<br><span style="opacity:.8;font-size:8px">'+lm.desc.substring(0,60)+'...</span></span>';
     el.addEventListener('click',(e)=>{e.stopPropagation();showLandmarkDetail(lm);});
@@ -735,8 +794,8 @@ function drawMarkers(){
   // GPS marker position
   if(geoMarker.style.display==='block' && geoMarker.dataset.mapX){
     const gp=pxToMapPx(parseFloat(geoMarker.dataset.mapX),parseFloat(geoMarker.dataset.mapY));
-    geoMarker.style.left=(gp.x-11)+'px';
-    geoMarker.style.top=(gp.y-11)+'px';
+    geoMarker.style.left=gp.x+'px';
+    geoMarker.style.top=gp.y+'px';
   }
 }
 
@@ -814,6 +873,10 @@ function showSpotDetail(s,day,idx){
   }
   bodyEl.innerHTML=html;
   panel.classList.add('active');
+  // 手机上显示详情遮罩层
+  if(window.innerWidth <= 768){
+    document.getElementById('detailOverlay').classList.add('active');
+  }
   // Store current spot coords for navigation
   panel.dataset.lat=s.lat;
   panel.dataset.lng=s.lng;
@@ -823,12 +886,13 @@ function showSpotDetail(s,day,idx){
 }
 function closeSpotDetail(){
   document.getElementById('spotDetail').classList.remove('active');
+  document.getElementById('detailOverlay').classList.remove('active');
   activeSpotName=null;
   drawMarkers();
 }
 // Click outside to close
 mapBox.addEventListener('click',(e)=>{
-  if(!e.target.closest('#spotDetail') && !e.target.closest('.marker') && !e.target.closest('.rec-marker') && !e.target.closest('.tube-marker') && !e.target.closest('.toilet-marker') && !e.target.closest('.landmark-marker')){
+  if(!e.target.closest('#spotDetail') && !e.target.closest('.marker') && !e.target.closest('.rec-marker') && !e.target.closest('.tube-marker') && !e.target.closest('.toilet-marker') && !e.target.closest('.landmark-marker') && !e.target.closest('.hotel-pin')){
     closeSpotDetail();
   }
 });
@@ -925,8 +989,7 @@ function switchDay(idx){
 
 function buildLegend(){
   const c=document.getElementById('legendBar');
-  DAYS.forEach((d,i)=>{const el=document.createElement('div');el.className='legend-item';el.style.cursor='pointer';el.innerHTML='<div class="legend-color" style="background:'+d.color+'"></div>'+d.date+'('+d.wd+')';el.addEventListener('click',()=>switchDay(i));c.appendChild(el);});
-  c.innerHTML+='<div class="legend-item" style="margin-left:8px;border-left:1px solid var(--border);padding-left:12px;">🏨 酒店</div>';
+  c.innerHTML+='<div class="legend-item">🏨 酒店</div>';
   c.innerHTML+='<div class="legend-item" style="margin-left:4px;"><div class="legend-color" style="background:#3498db;height:2px;border-top:2px dashed #3498db;"></div>方案A(游船)</div>';
   c.innerHTML+='<div class="legend-item" style="margin-left:8px;border-left:1px solid var(--border);padding-left:12px;"><span style="background:#E32017;color:#fff;font-size:8px;padding:1px 4px;border-radius:50%;">M</span> 地铁站</div>';
   c.innerHTML+='<div class="legend-item"><span style="background:#27ae60;color:#fff;font-size:8px;padding:1px 3px;border-radius:2px;">WC</span> 厕所(免费)</div>';
@@ -1027,7 +1090,16 @@ mapBox.addEventListener('touchmove',e=>{
   }
 },{passive:true});
 
-mapBox.addEventListener('touchend',()=>{isDragging=false;touchStartDist=0;});
+mapBox.addEventListener('touchend',e=>{
+  isDragging=false;touchStartDist=0;
+  // 手机上点击空白处关闭详情面板
+  if(!touchMoved && e.changedTouches[0]){
+    const t=document.elementFromPoint(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    if(t && !t.closest('#spotDetail') && !t.closest('.marker') && !t.closest('.rec-marker') && !t.closest('.tube-marker') && !t.closest('.toilet-marker') && !t.closest('.landmark-marker') && !t.closest('.hotel-pin') && !t.closest('.map-ctrl') && !t.closest('.legend-bar') && !t.closest('.mobile-toggle')){
+      closeSpotDetail();
+    }
+  }
+});
 // Prevent click after drag on mobile (only if actually moved significantly)
 let touchStartX=0,touchStartY=0,touchMoved=false;
 mapBox.addEventListener('touchstart',e=>{touchMoved=false;if(e.touches[0]){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;}},{passive:true});
@@ -1036,6 +1108,16 @@ mapBox.addEventListener('click',e=>{if(touchMoved){touchMoved=false;e.stopPropag
 
 mapBox.style.cursor='grab';
 buildTabs();buildLegend();switchDay(0);
+
+// 窗口大小变化时重绘
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{
+    drawMarkers();
+    updateMap();
+  },100);
+});
 </script>
 <script>
 if('serviceWorker' in navigator && !location.protocol.startsWith('file')){
