@@ -14,7 +14,7 @@ const ASSETS=[
   './assets/marker-icon-2x.png',
   './assets/marker-shadow.png'
 ];
-// Listen for skip_waiting message
+// Listen for skip_waiting message1
 self.addEventListener('message',e=>{
   if(e.data&&e.data.type==='SKIP_WAITING')self.skipWaiting();
 });
