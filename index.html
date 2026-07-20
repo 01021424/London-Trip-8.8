@@ -997,6 +997,26 @@ mapBox.addEventListener('click',e=>{if(touchMoved){touchMoved=false;e.stopPropag
 mapBox.style.cursor='grab';
 buildTabs();buildLegend();switchDay(0);
 </script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}</script>
+<script>
+if('serviceWorker' in navigator){
+  // Force update service worker on every page load
+  navigator.serviceWorker.register('./sw.js?v='+Date.now()).then(reg=>{
+    if(reg.waiting){
+      reg.waiting.postMessage({type:'SKIP_WAITING'});
+    }
+    if(reg.installing){
+      reg.installing.postMessage({type:'SKIP_WAITING'});
+    }
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      window.location.reload();
+    });
+  }).catch(()=>{
+    // If registration fails, try unregistering old ones
+    navigator.serviceWorker.getRegistrations().then(regs=>{
+      regs.forEach(r=>r.unregister());
+    });
+  });
+}
+</script>
 </body>
 </html>

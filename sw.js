@@ -1,4 +1,4 @@
-const CACHE_NAME='london-map-v4';
+const CACHE_NAME='london-map-v5';
 const ASSETS=[
   './index.html',
   './manifest.json',
@@ -14,6 +14,10 @@ const ASSETS=[
   './assets/marker-icon-2x.png',
   './assets/marker-shadow.png'
 ];
+// Listen for skip_waiting message
+self.addEventListener('message',e=>{
+  if(e.data&&e.data.type==='SKIP_WAITING')self.skipWaiting();
+});
 self.addEventListener('install',e=>{
   e.waitUntil(
     caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS))
