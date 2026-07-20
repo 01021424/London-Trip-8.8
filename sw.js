@@ -1,4 +1,4 @@
-const CACHE_NAME='london-map-v3';
+const CACHE_NAME='london-map-v4';
 const ASSETS=[
   './index.html',
   './manifest.json',
@@ -27,7 +27,24 @@ self.addEventListener('activate',e=>{
   self.clients.claim();
 });
 self.addEventListener('fetch',e=>{
+  const req=e.request;
+  // HTML pages: network first, fall back to cache
+  if(req.mode==='navigate'||(req.headers.get('accept')||'').includes('text/html')){
+    e.respondWith(
+      fetch(req).then(res=>{
+        const clone=res.clone();
+        caches.open(CACHE_NAME).then(c=>c.put(req,clone));
+        return res;
+      }).catch(()=>caches.match(req))
+    );
+    return;
+  }
+  // Other assets: cache first
   e.respondWith(
-    caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request).catch(()=>caches.match('./index.html')))
+    caches.match(req).then(r=>r||fetch(req).then(res=>{
+      const clone=res.clone();
+      caches.open(CACHE_NAME).then(c=>c.put(req,clone));
+      return res;
+    }).catch(()=>null))
   );
 });
