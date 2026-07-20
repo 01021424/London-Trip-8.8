@@ -998,23 +998,19 @@ mapBox.style.cursor='grab';
 buildTabs();buildLegend();switchDay(0);
 </script>
 <script>
-if('serviceWorker' in navigator){
-  // Force update service worker on every page load
-  navigator.serviceWorker.register('./sw.js?v='+Date.now()).then(reg=>{
+if('serviceWorker' in navigator && !location.protocol.startsWith('file')){
+  navigator.serviceWorker.register('./sw.js').then(reg=>{
+    // Only reload if a NEW version was found and activated (not first install)
     if(reg.waiting){
       reg.waiting.postMessage({type:'SKIP_WAITING'});
     }
-    if(reg.installing){
-      reg.installing.postMessage({type:'SKIP_WAITING'});
-    }
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  });
+  // Listen for actual SW replacement, but skip the very first load
+  let firstController = navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(navigator.serviceWorker.controller !== firstController){
       window.location.reload();
-    });
-  }).catch(()=>{
-    // If registration fails, try unregistering old ones
-    navigator.serviceWorker.getRegistrations().then(regs=>{
-      regs.forEach(r=>r.unregister());
-    });
+    }
   });
 }
 </script>
