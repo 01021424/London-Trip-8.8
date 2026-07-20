@@ -1,9 +1,10 @@
-const CACHE_NAME='london-map-v2';
+const CACHE_NAME='london-map-v3';
 const ASSETS=[
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
+  './assets/london_map.webp',
   './assets/london_map.png',
   './assets/london_map_dark.png',
   './assets/fontawesome.min.css',
